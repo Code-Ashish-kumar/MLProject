@@ -55,8 +55,73 @@ class ModelTrainer:
                 "AdaBoostRegressor" : AdaBoostRegressor(),
                 "GradientRegressor" : GradientBoostingRegressor()
             }
+            
+            params = {
+                "Linear Regression": {
+                },
 
-            model_report:dict = evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models)
+                "Lasso": {
+                    "alpha": [0.0001, 0.001, 0.01, 0.1, 1, 10],
+                    "max_iter": [1000, 5000]
+                },
+
+                "Ridge": {
+                    "alpha": [0.01, 0.1, 1, 10, 100],
+                    "solver": ["auto", "svd", "cholesky"]
+                },
+
+                "K-neighbors regressor": {
+                    "n_neighbors": [3, 5, 7, 9, 11],
+                    "weights": ["uniform", "distance"],
+                    "metric": ["minkowski", "euclidean", "manhattan"]
+                },
+
+                "Decision Tree": {
+                    "criterion": ["squared_error", "friedman_mse"],
+                    "max_depth": [None, 5, 10, 20, 30],
+                    "min_samples_split": [2, 5, 10],
+                    "min_samples_leaf": [1, 2, 4]
+                },
+
+                "Random Forest Regressor": {
+                    "n_estimators": [100, 200, 300],
+                    "max_depth": [None, 10, 20, 30],
+                    "min_samples_split": [2, 5, 10],
+                    "min_samples_leaf": [1, 2, 4],
+                    "max_features": ["sqrt", "log2"]
+                },
+
+                "XGBRegressor": {
+                    "n_estimators": [100, 200, 300],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "max_depth": [3, 5, 7],
+                    "subsample": [0.7, 0.8, 1.0],
+                    "colsample_bytree": [0.7, 0.8, 1.0]
+                },
+
+                "CatBoostRegressor": {
+                    "iterations": [200, 500],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "depth": [4, 6, 8],
+                    "l2_leaf_reg": [1, 3, 5]
+                },
+
+                "AdaBoostRegressor": {
+                    "n_estimators": [50, 100, 200],
+                    "learning_rate": [0.01, 0.05, 0.1, 1.0],
+                    "loss": ["linear", "square", "exponential"]
+                },
+
+                "GradientRegressor": {
+                    "n_estimators": [100, 200],
+                    "learning_rate": [0.01, 0.05, 0.1],
+                    "max_depth": [3, 5, 7],
+                    "subsample": [0.8, 1.0]
+                }
+            }
+
+
+            model_report:dict = evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,y_test=y_test,models=models,params=params)
 
             best_model_name = max(model_report, key=model_report.get)
             best_model_score = model_report[best_model_name]
@@ -65,8 +130,6 @@ class ModelTrainer:
                 raise CustomException("No best model found")
             
             best_model = models[best_model_name]
-
-            best_model.fit(X_train,y_train)
             
             logging.info("Best found model from train and testing dataset")
 
