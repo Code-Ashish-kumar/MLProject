@@ -33,7 +33,10 @@ def predict_data():
         print(pred_df)
 
         predict_pipeline = PredictionPipeline()
-        results = predict_pipeline.predict(features=pred_df)
+        try:
+            results = predict_pipeline.predict(features=pred_df)
+        except Exception as e:
+            return f"Prediction error: {str(e)}"
 
         return render_template('home.html' , results=results[0])
     
